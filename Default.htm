@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Process XML using jQuery</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    
+    <script type="text/javascript" language="javascript">
+    $(document).ready(function(){
+        $("#dvContent").append("<ul></ul>");
+        $.ajax({
+            type: "GET",
+            //url: "BookList.xml",
+			url: "http://www.bolsadecereales.org/pagrs-xml.xml",
+            dataType: "xml",
+            success: function(xml){
+                
+				$(xml).find('zona[value="NOA"]').children().each(function(){
+					var sTitle2 = $(this).find('descripcion').text();
+				//	$("<li></li>").html(sTitle2 + ", " + sPublisher).appendTo("#dvContent ul");	
+				});
+				
+				$(xml).find('zona').each(function(){
+                var sTitle = $(this).find('nombre').text();
+			   		$(this).find('cereal').each(function(){
+						var cerealName = $(this).attr("name");
+
+						var parametro = $(this).find('atributo').eq(1).attr("tipo");
+						var svalor = $(this).find('atributo').eq(1).text();
+
+						$("<li></li>").html(sTitle + " | " + cerealName  + " => " + parametro + ", " + svalor).appendTo("#dvContent ul");
+					});
+            	});
+            },
+            error: function() {
+            alert("An error occurred while processing XML file.");
+            }
+        });
+    });    
+</script>
+<style type="text/css">
+body
+{
+  font-family  : Arial;
+  font-size  : 10pt;
+}
+</style>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div id="dvContent">
+    
+    </div>
+    </form>
+</body>
+</html>
